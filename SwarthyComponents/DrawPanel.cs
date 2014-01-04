@@ -7,9 +7,10 @@ using System.Drawing;
 
 namespace SwarthyComponents.UI
 {
-    public class DrawPanel:Panel
+    public class DrawPanel : Panel
     {
-        public DrawPanel():base()
+        public DrawPanel()
+            : base()
         {
             DoubleBuffered = true;
             SetStyle(ControlStyles.UserPaint, true);
