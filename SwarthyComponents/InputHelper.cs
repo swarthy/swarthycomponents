@@ -43,5 +43,6 @@ namespace SwarthyComponents.Input
             }
             return val;
         }
+
     }
 }
