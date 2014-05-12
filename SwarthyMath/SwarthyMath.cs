@@ -1104,7 +1104,7 @@ namespace SwarthyMath
             return string.Format("[{0}] {1}-{2}", Value, Start, End);
         }
     }
-#endregion
+    #endregion
     #region SwarthyHelper
     /// <summary>
     /// Класс, хранящих полезные методы
@@ -1333,6 +1333,83 @@ namespace SwarthyMath
         }
         #endregion
         #endregion
+        #endregion
+        #region Генерация случайных величин
+        static Random rand = new Random();
+        /// <summary>
+        /// Равномерное распределение
+        /// </summary>
+        /// <param name="a">нижняя граница</param>
+        /// <param name="b">верхняя граница</param>
+        /// <returns></returns>
+        static decimal UniformDistribution(decimal a, decimal b)
+        {
+            return a + RandomDecimal * (b - a);
+        }
+        /// <summary>
+        /// Равномерное распределение (вектор)
+        /// </summary>
+        /// <param name="n">размер вектора</param>
+        /// <param name="a">нижняя граница</param>
+        /// <param name="b">верхняя граница</param>
+        /// <returns></returns>
+        static SVector UniformDistribution(int n, decimal a, decimal b)
+        {
+            SVector result = new SVector(n);
+            for (int i = 0; i < n; i++)
+                result[i] = UniformDistribution(a, b);
+            return result;
+        }
+
+        /// <summary>
+        /// Экспоненциальное распределение
+        /// </summary>
+        /// <param name="lambda"></param>
+        /// <returns></returns>
+        static decimal ExponentialDistribution(decimal lambda)
+        {
+            return (-1 / lambda) * (Log(RandomDecimal));
+        }
+        /// <summary>
+        /// Экспоненциальное распределение
+        /// </summary>
+        /// <param name="n">размер вектора</param>
+        /// <param name="lambda"></param>
+        /// <returns></returns>
+        static SVector ExponentioalDistribution(int n, decimal lambda)
+        {
+            SVector result = new SVector(n);
+            for (int i = 0; i < n; i++)
+                result[i] = ExponentialDistribution(lambda);
+            return result;
+        }
+
+        /// <summary>
+        /// Нормальное распределение (распределение по Гауссу)
+        /// </summary>
+        /// <param name="n">размерность вектора</param>
+        /// <param name="mu">математическое ожидание, медиана, мода</param>
+        /// <param name="sigma">среднеквадратическое отклонение (sigma^2 - дисперсия)</param>        
+        /// <returns></returns>
+        static SVector NormalDistribution(int n, decimal mu, decimal sigma)
+        {
+            SVector result = new SVector(n);
+            for (int i = 0; i < n; i++)
+            {
+                result[i] = mu;
+                for (int j = 0; j < 12; j++)
+                    result[i] += RandomDecimal * sigma;
+                result[i] -= 6 * sigma;
+            }
+            return result;
+        }
+        static decimal RandomDecimal
+        {
+            get
+            {
+                return (decimal)rand.NextDouble();
+            }
+        }
         #endregion
     }
     /// <summary>
