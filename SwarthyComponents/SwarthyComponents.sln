@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwarthyComponents", "SwarthyComponents.csproj", "{32CB4CC7-F584-4623-9822-A9C92E47166A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwarthyMath", "..\SwarthyMath\SwarthyMath.csproj", "{09315D09-E7A4-450F-9486-9499B68EB50D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{32CB4CC7-F584-4623-9822-A9C92E47166A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32CB4CC7-F584-4623-9822-A9C92E47166A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32CB4CC7-F584-4623-9822-A9C92E47166A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09315D09-E7A4-450F-9486-9499B68EB50D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09315D09-E7A4-450F-9486-9499B68EB50D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09315D09-E7A4-450F-9486-9499B68EB50D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09315D09-E7A4-450F-9486-9499B68EB50D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
