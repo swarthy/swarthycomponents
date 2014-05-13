@@ -27,6 +27,12 @@ namespace SwarthyMath
     /// <param name="parameter"></param>
     /// <returns></returns>
     public delegate SVector functionN1(Decimal parameter);//  несколько значений / один параметр
+    /// <summary>
+    /// Делегат для прогонки
+    /// </summary>
+    /// <param name="alphaPreLast"></param>
+    /// <param name="betaPreLast"></param>
+    /// <returns></returns>
     public delegate Decimal funcAB(Decimal alphaPreLast, Decimal betaPreLast); //для прогонки
     #endregion
     #region Матрица
@@ -36,29 +42,69 @@ namespace SwarthyMath
     public struct SMatrixSize
     {
         int n, m;
+        /// <summary>
+        /// Число строк
+        /// </summary>
         public int N { get { return n; } }
+        /// <summary>
+        /// Число столбцов
+        /// </summary>
         public int M { get { return m; } }
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="N">число строк</param>
+        /// <param name="M">число столбцов</param>
         public SMatrixSize(int N, int M)
         {
             n = N;
             m = M;
         }
+        /// <summary>
+        /// equals
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             SMatrixSize s = (SMatrixSize)obj;
             return (s.n == n && s.m == m);
         }
+        /// <summary>
+        /// оператор равенства
+        /// </summary>
+        /// <param name="s1"></param>
+        /// <param name="s2"></param>
+        /// <returns></returns>
         public static bool operator ==(SMatrixSize s1, SMatrixSize s2)
         {
             return s1.Equals(s2);
         }
+        /// <summary>
+        /// Оператор неравенства
+        /// </summary>
+        /// <param name="s1"></param>
+        /// <param name="s2"></param>
+        /// <returns></returns>
         public static bool operator !=(SMatrixSize s1, SMatrixSize s2)
         {
             return !s1.Equals(s2);
         }
+        /// <summary>
+        /// преобразование размера матрицы в строку
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return String.Format("[{0}x{1}]", n, m);
+        }
+        /// <summary>
+        /// hash
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
     /// <summary>
@@ -67,6 +113,9 @@ namespace SwarthyMath
     public class SMatrix
     {
         Decimal[,] matr;
+        /// <summary>
+        /// Размер матрицы
+        /// </summary>
         public SMatrixSize Size
         {
             get
@@ -94,30 +143,59 @@ namespace SwarthyMath
                 return matr.GetLength(1);
             }
         }
+        /// <summary>
+        /// Конструктор
+        /// </summary>
         public SMatrix()
         {
         }
+        /// <summary>
+        /// Преобразование двумерного массива к матрице
+        /// </summary>
+        /// <param name="matr"></param>
+        /// <returns></returns>
         public static implicit operator SMatrix(Decimal[,] matr)
         {
             return new SMatrix(matr);
         }
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="size">размер квадратной матрицы</param>
         public SMatrix(int size)
         {
             matr = new Decimal[size, size];
         }
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="n">число строк</param>
+        /// <param name="m">число столбцов</param>
         public SMatrix(int n, int m)
         {
             matr = new Decimal[n, m];
         }
+        /// <summary>
+        /// Конструкторв
+        /// </summary>
+        /// <param name="size">Размер матрицы</param>
         public SMatrix(SMatrixSize size)
         {
             matr = new Decimal[size.N, size.M];
         }
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="Initial">двумерный массив значений</param>
         public SMatrix(Decimal[,] Initial)
         {
             matr = Initial;
         }
-
+        /// <summary>
+        /// Конструкторв матрицы-столбца(строки)
+        /// </summary>
+        /// <param name="vect">вектор значений</param>
+        /// <param name="row">вид матрицы: строка или столбец</param>
         public SMatrix(SVector vect, bool row = true)
         {
             if (row)
@@ -133,19 +211,38 @@ namespace SwarthyMath
                     matr[i, 0] = vect[i];
             }
         }
+        /// <summary>
+        /// Клон матрицы
+        /// </summary>
+        /// <returns></returns>
         public SMatrix Clone()
         {
             return new SMatrix((Decimal[,])matr.Clone());
         }
+        /// <summary>
+        /// Доступ к значениям матрицы через индексы
+        /// </summary>
+        /// <param name="i">строка</param>
+        /// <param name="j">столбец</param>
+        /// <returns></returns>
         public Decimal this[int i, int j]
         {
             get { return matr[i, j]; }
             set { matr[i, j] = value; }
         }
+        /// <summary>
+        /// Изменить размер матрицы
+        /// </summary>
+        /// <param name="n">новое число строк</param>
+        /// <param name="m">новое число столбцов</param>
         public void Resize(int n, int m)
         {
             Resize(new SMatrixSize(n, m));
         }
+        /// <summary>
+        /// Изменить размер матрицы
+        /// </summary>
+        /// <param name="size">размер матрицы</param>
         public void Resize(SMatrixSize size)
         {
             Decimal[,] newMatr = new Decimal[size.N, size.M];
@@ -156,12 +253,20 @@ namespace SwarthyMath
                     newMatr[i, j] = matr[i, j];
             matr = newMatr;
         }
+        /// <summary>
+        /// Очистить матрицу
+        /// </summary>
         public void Clear()
         {
             for (int i = 0; i < N; i++)
                 for (int j = 0; j < M; j++)
                     matr[i, j] = 0;
         }
+        /// <summary>
+        /// Получить столбец матрицы
+        /// </summary>
+        /// <param name="j">столбец</param>
+        /// <returns></returns>
         public SVector getColumn(int j)
         {
             SVector v = new SVector(N);
@@ -169,6 +274,11 @@ namespace SwarthyMath
                 v[i] = matr[i, j];
             return v;
         }
+        /// <summary>
+        /// Получить строку матрицы
+        /// </summary>
+        /// <param name="i">строка</param>
+        /// <returns></returns>
         public SVector getRow(int i)
         {
             SVector v = new SVector(M);
@@ -176,6 +286,11 @@ namespace SwarthyMath
                 v[j] = matr[i, j];
             return v;
         }
+        /// <summary>
+        /// Задать столбец матрицы
+        /// </summary>
+        /// <param name="col">индекс столбца</param>
+        /// <param name="value">вектор значений</param>
         public void setColumn(int col, SVector value)
         {
             if (value.Length != N)
@@ -183,6 +298,11 @@ namespace SwarthyMath
             for (int i = 0; i < N; i++)
                 matr[i, col] = value[i];
         }
+        /// <summary>
+        /// Задать строку матрицы
+        /// </summary>
+        /// <param name="row">индекс строки</param>
+        /// <param name="value">вектор значений</param>
         public void setRow(int row, SVector value)
         {
             if (value.Length != M)
@@ -190,6 +310,10 @@ namespace SwarthyMath
             for (int j = 0; j < M; j++)
                 matr[row, j] = value[j];
         }
+        /// <summary>
+        /// Добавить столбец
+        /// </summary>
+        /// <param name="value">вектор значений</param>
         public void addColumn(SVector value)
         {
             if (value.Length != M)
@@ -203,6 +327,10 @@ namespace SwarthyMath
             }
             matr = newMatrix;
         }
+        /// <summary>
+        /// Добавить строку
+        /// </summary>
+        /// <param name="value">вектор значений</param>
         public void addRow(SVector value)
         {
             if (value.Length != M)
@@ -216,6 +344,10 @@ namespace SwarthyMath
                 }
             matr = newMatrix;
         }
+        /// <summary>
+        /// Удалить столбец
+        /// </summary>
+        /// <param name="col">индекс столбца</param>
         public void removeColumn(int col)
         {
             Decimal[,] newMatr = new Decimal[N, M - 1];
@@ -224,6 +356,10 @@ namespace SwarthyMath
                     newMatr[i, j] = matr[i, j >= col ? j + 1 : j];
             matr = newMatr;
         }
+        /// <summary>
+        /// Удалить строку
+        /// </summary>
+        /// <param name="row">индекс строки</param>
         public void removeRow(int row)
         {
             Decimal[,] newMatr = new Decimal[N - 1, M];
@@ -232,18 +368,31 @@ namespace SwarthyMath
                     newMatr[i, j] = matr[i >= row ? i + 1 : i, j];
             matr = newMatr;
         }
+        /// <summary>
+        /// Поменять местами столбцы
+        /// </summary>
+        /// <param name="col1">индекс первого столбца</param>
+        /// <param name="col2">индекс второго столбца</param>
         public void swapColumns(int col1, int col2)
         {
             SVector temp = getColumn(col1);
             setColumn(col1, getColumn(col2));
             setColumn(col2, temp);
         }
+        /// <summary>
+        /// Поменять строки
+        /// </summary>
+        /// <param name="row1">индекс первой строки</param>
+        /// <param name="row2">индекс второй строки</param>
         public void swapRows(int row1, int row2)
         {
             SVector temp = getRow(row1);
             setRow(row1, getRow(row2));
             setRow(row2, temp);
         }
+        /// <summary>
+        /// Получить список элементов матрицы (слитые подряд строки)
+        /// </summary>
         public List<Decimal> ListOfElements
         {
             get
@@ -517,7 +666,12 @@ namespace SwarthyMath
             }
             return newMatr;
         }
-
+        /// <summary>
+        /// поэлементное сложение двух матриц
+        /// </summary>
+        /// <param name="A">первая матрица</param>
+        /// <param name="B">вторая матрица</param>
+        /// <returns></returns>
         public static SMatrix operator +(SMatrix A, SMatrix B)
         {
             if (A.Size != B.Size)
@@ -528,6 +682,12 @@ namespace SwarthyMath
                     s[i, j] = A[i, j] + B[i, j];
             return s;
         }
+        /// <summary>
+        /// Поэлементное вычетание матриц
+        /// </summary>
+        /// <param name="A">первая матрица</param>
+        /// <param name="B">вторая матрица</param>
+        /// <returns></returns>
         public static SMatrix operator -(SMatrix A, SMatrix B)
         {
             if (A.Size != B.Size)
@@ -538,6 +698,12 @@ namespace SwarthyMath
                     s[i, j] = A[i, j] - B[i, j];
             return s;
         }
+        /// <summary>
+        /// Умножение матриц
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <returns></returns>
         public static SMatrix operator *(SMatrix A, SMatrix B)
         {
             if (A.M != B.N)
@@ -549,7 +715,12 @@ namespace SwarthyMath
                         s[i, j] += A[i, k] * B[k, j];
             return s;
         }
-
+        /// <summary>
+        /// Умножение каждого элемента матрицы на число
+        /// </summary>
+        /// <param name="A">матрица</param>
+        /// <param name="b">число</param>
+        /// <returns></returns>
         public static SMatrix operator *(SMatrix A, Decimal b)
         {
             SMatrix result = A.Clone();
@@ -558,23 +729,39 @@ namespace SwarthyMath
                     result[i, j] *= b;
             return result;
         }
-
+        /// <summary>
+        /// приведение матрицы к строке
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return ToString(3);
         }
+        /// <summary>
+        /// Преобразование матрицы к строке, с указанием количества знаков после запятой
+        /// </summary>
+        /// <param name="DigitsAfterPoint">количество знаков после запятой</param>
+        /// <returns></returns>
         public string ToString(int DigitsAfterPoint = 3)
         {
-            string s = "";
+            string formatString = "{0:f" + DigitsAfterPoint.ToString() + "}{1}";
+            StringBuilder sb = new StringBuilder();
+            //string s = "";
             for (int i = 0; i < N; i++)
             {
                 for (int j = 0; j < M; j++)
-                    s += string.Format("{0}{1}", Math.Round(matr[i, j], DigitsAfterPoint), j + 1 == M ? "" : " ");
+                    sb.AppendFormat(formatString, matr[i, j], j + 1 == M ? "" : " ");
+                sb.AppendLine();
+                //s += string.Format("{0}{1}", Math.Round(matr[i, j], DigitsAfterPoint), j + 1 == M ? "" : " ");
                 //s += string.Format("{0:0.0}{1}", matr[i, j], j + 1 == M ? "" : " ");
-                s += "\r\n";
+                //s += "\r\n";
             }
-            return s;
+            return sb.ToString();
         }
+        /// <summary>
+        /// Преобразование матрицы в html таблицу
+        /// </summary>
+        /// <returns></returns>
         public string ToHTMLTable()
         {
             StringBuilder sb = new StringBuilder();
@@ -595,6 +782,9 @@ namespace SwarthyMath
             sb.AppendLine("</table>");
             return sb.ToString();
         }
+        /// <summary>
+        /// Максимальный по модулю элемент
+        /// </summary>
         public Decimal maxABS
         {
             get
@@ -607,6 +797,12 @@ namespace SwarthyMath
                 return max;
             }
         }
+        /// <summary>
+        /// Распарсить матрицу из массива строк
+        /// </summary>
+        /// <param name="source">массив строк</param>
+        /// <param name="separator">разделитель</param>
+        /// <returns></returns>
         public static SMatrix Parse(string[] source, char separator = ' ')
         {
             int n = source.Length;
@@ -631,7 +827,7 @@ namespace SwarthyMath
             return result;
         }
     }
-    
+
     #endregion
     #region Вектор
     /// <summary>
@@ -643,7 +839,8 @@ namespace SwarthyMath
         /// <summary>
         /// Пустой конструктор
         /// </summary>
-        public SVector():this(0)
+        public SVector()
+            : this(0)
         {
         }
         /// <summary>
@@ -690,6 +887,9 @@ namespace SwarthyMath
                 return vector.Length;
             }
         }
+        /// <summary>
+        /// Размер вектора
+        /// </summary>
         public int Length
         {
             get
@@ -698,7 +898,7 @@ namespace SwarthyMath
             }
         }
         /// <summary>
-        /// Преобразовать в List<decimal>
+        /// Преобразовать в List
         /// </summary>
         public List<Decimal> getList
         {
@@ -790,7 +990,7 @@ namespace SwarthyMath
         /// <returns></returns>
         public string ToString(int DigitsAfterPoint = 3)
         {
-            string formatString = "{0:f"+DigitsAfterPoint.ToString()+"} ";
+            string formatString = "{0:f" + DigitsAfterPoint.ToString() + "} ";
             StringBuilder sb = new StringBuilder();
             getList.ForEach(coord => sb.AppendFormat(formatString, coord));
             return sb.ToString();
@@ -1325,18 +1525,39 @@ namespace SwarthyMath
         }
         #endregion
         #region Math.доработки
+        /// <summary>
+        /// Квадратный корень
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
         public static Decimal Sqrt(Decimal x)
         {
             return (Decimal)Math.Sqrt((double)x);
         }
+        /// <summary>
+        /// Экспонента
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
         public static Decimal Exp(Decimal x)
         {
             return (Decimal)Math.Exp((double)x);
         }
+        /// <summary>
+        /// Возведение в степень
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="pow"></param>
+        /// <returns></returns>
         public static Decimal Pow(Decimal x, Decimal pow)
         {
             return (Decimal)Math.Pow((double)x, (double)pow);
         }
+        /// <summary>
+        /// Натуральный логарифм
+        /// </summary>
+        /// <param name="a"></param>
+        /// <returns></returns>
         public static Decimal Log(Decimal a)
         {
             return (Decimal)Math.Log((double)a);
@@ -1442,6 +1663,11 @@ namespace SwarthyMath
         /// <param name="C">Вектор, состоящий из элементов, находящихся выше главное диагонали (значения должны быть сдвинуты на 1 назад)</param>
         /// <param name="D">Вектор свободных членов</param>
         /// <param name="FindResult">Необходимо ли подсчитывать результат. Поумолчанию результат не считается.</param>
+        /// <param name="customLastVal">Частное последнее значение Оо? смотри исходник, я уже не помню че я правил для метоптов</param>
+        /// <param name="customAB">Частные A и B</param>
+        /// <param name="Alpha0"></param>
+        /// <param name="Beta0"></param>
+        /// <param name="customLastX"></param>
         /// <returns>Возвращает структуру AlphaBetaResult, хранящую вектора Alpha, Beta и, если необходимо, вектор решений.</returns>
         public static AlphaBetaResult ThreePointSweep(SVector A, SVector B, SVector C, SVector D, funcAB customLastVal, bool FindResult = false, bool customAB = false, Decimal Alpha0 = 0, Decimal Beta0 = 0, bool customLastX = false)
         {
@@ -1496,6 +1722,12 @@ namespace SwarthyMath
         #endregion
         #region СЛАУ
         #region Метод Гаусса
+        /// <summary>
+        /// Метод Гаусса
+        /// </summary>
+        /// <param name="A">матрица</param>
+        /// <param name="b">столбец свободных членов</param>
+        /// <returns></returns>
         public static SVector Gauss(SMatrix A, SVector b)
         {
             SVector x = new SVector(b.Length);
@@ -1529,7 +1761,7 @@ namespace SwarthyMath
         /// <summary>
         /// Генератор случайных чисел, используемый внутри библиотеки
         /// </summary>
-        public static Random rand = new Random();        
+        public static Random rand = new Random();
         /// <summary>
         /// Случайное число, приведенное к типу decimal
         /// </summary>
@@ -1549,7 +1781,7 @@ namespace SwarthyMath
         public static ulong Factorial(ulong n)
         {
             ulong result = n < 2 ? 1 : n;
-            while(n>1)
+            while (n > 1)
             {
                 result *= --n;
             }
@@ -1612,6 +1844,21 @@ namespace SwarthyMath
         }
 
         /// <summary>
+        /// Нормальное распределение
+        /// </summary>
+        /// <param name="mu">математическое ожидание, медиана, мода</param>
+        /// <param name="sigma">среднеквадратическое отклонение (sigma^2 - дисперсия)</param>
+        /// <returns></returns>
+        public static decimal NormalDistribution(decimal mu, decimal sigma)
+        {
+            decimal result = mu;
+            for (int j = 0; j < 12; j++)
+                result += SwarthyHelper.RandomDecimal * sigma;
+            result -= 6 * sigma;
+            return result;
+        }
+
+        /// <summary>
         /// Нормальное распределение (распределение по Гауссу)
         /// </summary>
         /// <param name="n">размерность вектора</param>
@@ -1622,12 +1869,7 @@ namespace SwarthyMath
         {
             SVector result = new SVector(n);
             for (int i = 0; i < n; i++)
-            {
-                result[i] = mu;
-                for (int j = 0; j < 12; j++)
-                    result[i] += SwarthyHelper.RandomDecimal * sigma;
-                result[i] -= 6 * sigma;
-            }
+                result[i] = NormalDistribution(mu, sigma);
             return result;
         }
 
@@ -1648,13 +1890,27 @@ namespace SwarthyMath
     /// </summary>
     public struct AlphaBetaResult
     {
+        /// <summary>
+        /// Результаты метода трехточечной прогонки
+        /// </summary>
         public SVector Alpha, Beta, Result;
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="Alpha"></param>
+        /// <param name="Beta"></param>
         public AlphaBetaResult(SVector Alpha, SVector Beta)
         {
             this.Alpha = Alpha;
             this.Beta = Beta;
             this.Result = new SVector(Alpha.Length);
         }
+        /// <summary>
+        /// Конструктор
+        /// </summary>
+        /// <param name="Alpha"></param>
+        /// <param name="Beta"></param>
+        /// <param name="Result"></param>
         public AlphaBetaResult(SVector Alpha, SVector Beta, SVector Result)
         {
             this.Alpha = Alpha;
