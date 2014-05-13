@@ -122,14 +122,14 @@ namespace SwarthyMath
         {
             if (row)
             {
-                matr = new Decimal[1, vect.Size];
-                for (int j = 0; j < vect.Size; j++)
+                matr = new Decimal[1, vect.Length];
+                for (int j = 0; j < vect.Length; j++)
                     matr[0, j] = vect[j];
             }
             else
             {
-                matr = new Decimal[vect.Size, 1];
-                for (int i = 0; i < vect.Size; i++)
+                matr = new Decimal[vect.Length, 1];
+                for (int i = 0; i < vect.Length; i++)
                     matr[i, 0] = vect[i];
             }
         }
@@ -178,22 +178,22 @@ namespace SwarthyMath
         }
         public void setColumn(int col, SVector value)
         {
-            if (value.Size != N)
+            if (value.Length != N)
                 throw new Exception("Невозможно задать столбец. Размерности не совпадают");
             for (int i = 0; i < N; i++)
                 matr[i, col] = value[i];
         }
         public void setRow(int row, SVector value)
         {
-            if (value.Size != M)
+            if (value.Length != M)
                 throw new Exception("Невозможно задать строку. Размерности не совпадают");
             for (int j = 0; j < M; j++)
                 matr[row, j] = value[j];
         }
         public void addColumn(SVector value)
         {
-            if (value.Size != M)
-                throw new Exception(string.Format("Нельзя добавить строку длиной {0} в матрицу размером {1}x{2}", value.Size, N, M));
+            if (value.Length != M)
+                throw new Exception(string.Format("Нельзя добавить строку длиной {0} в матрицу размером {1}x{2}", value.Length, N, M));
             Decimal[,] newMatrix = new Decimal[N, M + 1];
             for (int i = 0; i < N; i++)
             {
@@ -205,8 +205,8 @@ namespace SwarthyMath
         }
         public void addRow(SVector value)
         {
-            if (value.Size != M)
-                throw new Exception(string.Format("Нельзя добавить строку длиной {0} в матрицу размером {1}x{2}", value.Size, N, M));
+            if (value.Length != M)
+                throw new Exception(string.Format("Нельзя добавить строку длиной {0} в матрицу размером {1}x{2}", value.Length, N, M));
             Decimal[,] newMatrix = new Decimal[N + 1, M];
             for (int i = 0; i < N; i++)
                 for (int j = 0; j < M; j++)
@@ -631,33 +631,58 @@ namespace SwarthyMath
             return result;
         }
     }
+    
+    #endregion
+    #region Вектор
     /// <summary>
     /// Класс вектора
     /// </summary>
-    #endregion
-    #region Вектор
     public class SVector
     {
         Decimal[] vector;
-        public SVector()
+        /// <summary>
+        /// Пустой конструктор
+        /// </summary>
+        public SVector():this(0)
         {
         }
+        /// <summary>
+        /// Клон вектора
+        /// </summary>
+        /// <returns></returns>
         public SVector Clone()
         {
             return new SVector(vector.ToArray());
         }
+        /// <summary>
+        /// Преобразование денежного вектора в SVector
+        /// </summary>
+        /// <param name="arr">вектор</param>
+        /// <returns></returns>
         public static implicit operator SVector(decimal[] arr)
         {
             return new SVector(arr);
         }
+        /// <summary>
+        /// Конструктор вектора
+        /// </summary>
+        /// <param name="size">Размерность вектора</param>
         public SVector(int size)
         {
             vector = new Decimal[size];
         }
+        /// <summary>
+        /// конструктор
+        /// </summary>
+        /// <param name="Initial"></param>
         public SVector(params Decimal[] Initial)
         {
             vector = Initial;
         }
+        /// <summary>
+        /// Размер вектора
+        /// </summary>
+        [System.Obsolete("Используйте Length")]
         public int Size
         {
             get
@@ -665,6 +690,16 @@ namespace SwarthyMath
                 return vector.Length;
             }
         }
+        public int Length
+        {
+            get
+            {
+                return vector.Length;
+            }
+        }
+        /// <summary>
+        /// Преобразовать в List<decimal>
+        /// </summary>
         public List<Decimal> getList
         {
             get
@@ -672,43 +707,67 @@ namespace SwarthyMath
                 return vector.ToList();
             }
         }
+        /// <summary>
+        /// доступ к значению по индексу
+        /// </summary>
+        /// <param name="i">индекс</param>
+        /// <returns></returns>
         public Decimal this[int i]
         {
             get { return vector[i]; }
             set { vector[i] = value; }
         }
+        /// <summary>
+        /// Задать новый размер вектора
+        /// </summary>
+        /// <param name="size">новый размер</param>
         public void Resize(int size)
         {
             Array.Resize(ref vector, size);
         }
+        /// <summary>
+        /// Удалить элемент, находящийся по индексу index
+        /// </summary>
+        /// <param name="index">индекс удаляемого элемента</param>
         public void RemoveAt(int index)
         {
             List<Decimal> temp = getList;
             temp.RemoveAt(index);
             vector = temp.ToArray();
         }
+        /// <summary>
+        /// Индекс минимального элемента
+        /// </summary>
         public int MinInd
         {
             get
             {
                 int min = 0;
-                for (int i = 0; i < Size; i++)
+                for (int i = 0; i < Length; i++)
                     if (this[min] > this[i])
                         min = i;
                 return min;
             }
         }
+        /// <summary>
+        /// Индекс максимального элемента
+        /// </summary>
         public int MaxInd
         {
             get
             {
                 int max = 0;
-                for (int i = 0; i < Size; i++)
+                for (int i = 0; i < Length; i++)
                     if (this[max] < this[i])
                         max = i;
                 return max;
             }
         }
+        /// <summary>
+        /// Вектор, содержащий элементы, хранящиеся по индексам indecies
+        /// </summary>
+        /// <param name="indecies">массив индексов</param>
+        /// <returns></returns>
         public SVector getSubById(params int[] indecies)
         {
             Decimal[] r = new Decimal[indecies.Length];
@@ -716,16 +775,32 @@ namespace SwarthyMath
                 r[i] = vector[indecies[i]];
             return new SVector(r);
         }
+        /// <summary>
+        /// Преобразование вектора в строку
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return ToString(3);
         }
+        /// <summary>
+        /// Преобразование вектора в печатабельный вид, причем можно указать количество цифр после запятой
+        /// </summary>
+        /// <param name="DigitsAfterPoint">число знаков после запятой</param>
+        /// <returns></returns>
         public string ToString(int DigitsAfterPoint = 3)
         {
-            string answ = "";
-            getList.ForEach(coord => answ += Math.Round(coord, DigitsAfterPoint).ToString() + " ");
-            return answ;
+            string formatString = "{0:f"+DigitsAfterPoint.ToString()+"} ";
+            StringBuilder sb = new StringBuilder();
+            getList.ForEach(coord => sb.AppendFormat(formatString, coord));
+            return sb.ToString();
         }
+        /// <summary>
+        /// Частное форматирование вектора под html таблицу
+        /// </summary>
+        /// <param name="markNonZero"></param>
+        /// <param name="maxCol"></param>
+        /// <returns></returns>
         public string ToHTMLTable(bool markNonZero = false, int maxCol = 0)
         {
             StringBuilder sb = new StringBuilder();
@@ -736,7 +811,7 @@ namespace SwarthyMath
             sb.AppendLine("\t</tr>");
             */
             sb.AppendLine("\t<tr style=\"page-break-inside:avoid; page-break-after:auto\">");
-            for (int j = 0; j < Size; j++)
+            for (int j = 0; j < Length; j++)
             {
                 sb.AppendFormat("\t\t<td>{0}</td>\r\n", Math.Abs(vector[j]) > 0 && markNonZero ? string.Format("<span style='color: red; font-size: 14px;'>{0}</span>", vector[j]) : string.Format("{0}", vector[j]));
                 if (maxCol > 0 && (j + 1) % maxCol == 0)
@@ -772,6 +847,9 @@ namespace SwarthyMath
                 return M;
             }
         }
+        /// <summary>
+        /// Дисперсия
+        /// </summary>
         public Decimal D
         {
             get
@@ -782,127 +860,218 @@ namespace SwarthyMath
                 return d / (vector.Length - 1);
             }
         }
+        /// <summary>
+        /// Сравнение векторов. Поэлементно.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if (obj == null)
                 return false;
             SVector b = (SVector)obj;
-            if (b.Size != Size)
+            if (b.Length != Length)
                 return false;
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < Length; i++)
                 if (b[i] != vector[i])
                     return false;
             return true;
         }
+        /// <summary>
+        /// GetHashCode
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+        /// <summary>
+        /// Оператор равенства
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <returns></returns>
         public static bool operator ==(SVector A, SVector B)
         {
             if ((object)A == null)
                 return false;
             return A.Equals(B);
         }
+        /// <summary>
+        /// Оператор неравенства
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <returns></returns>
         public static bool operator !=(SVector A, SVector B)
         {
             if ((object)A == null)
                 return false;
             return !A.Equals(B);
         }
-        public static SVector operator +(SVector A, SVector B)
-        {
-            if (A.Size != B.Size)
-                throw new IndexOutOfRangeException(string.Format("Сложение векторов разной размерности невозможно [{0} и {1}]", A.Size, B.Size));
-            SVector v = new SVector(A.Size);
-            for (int i = 0; i < A.Size; i++)
-                v[i] = A[i] + B[i];
-            return v;
-        }
-        public static SVector operator -(SVector A, SVector B)
-        {
-            if (A.Size != B.Size)
-                throw new IndexOutOfRangeException(string.Format("Вычитание векторов разной размерности невозможно [{0} и {1}]", A.Size, B.Size));
-            SVector v = new SVector(A.Size);
-            for (int i = 0; i < A.Size; i++)
-                v[i] = A[i] - B[i];
-            return v;
-        }
-        public static SVector operator *(SVector A, SVector B)
-        {
-            if (A.Size != B.Size)
-                throw new IndexOutOfRangeException(string.Format("Поэлементное произведение векторов разной размерности невозможно [{0} и {1}]", A.Size, B.Size));
-            SVector v = new SVector(A.Size);
-            for (int i = 0; i < A.Size; i++)
-                v[i] = A[i] * B[i];
-            return v;
-        }
-        public static SVector operator /(SVector A, SVector B)
-        {
-            if (A.Size != B.Size)
-                throw new IndexOutOfRangeException(string.Format("Поэлементное частное векторов разной размерности невозможно [{0} и {1}]", A.Size, B.Size));
-            SVector v = new SVector(A.Size);
-            for (int i = 0; i < A.Size; i++)
-                v[i] = A[i] / B[i];
-            return v;
-        }
-
-        public static SVector operator *(SVector A, Decimal B)
-        {
-            SVector v = A.Clone();
-            for (int i = 0; i < A.Size; i++)
-                v[i] *= B;
-            return v;
-        }
-        public static SVector operator /(SVector A, Decimal B)
-        {
-            SVector v = A.Clone();
-            for (int i = 0; i < A.Size; i++)
-                v[i] /= B;
-            return v;
-        }
-        public static SVector operator *(Decimal B, SVector A)
-        {
-            return A * B;
-        }
-        public static SVector operator *(SMatrix m, SVector vect)
-        {
-            if (m.M != vect.Size)
-                throw new IndexOutOfRangeException(string.Format("Невозможно умножить матрицу с {0} столбцом(ами) на вектор из {1} элементов", m.M, vect.Size));
-            SVector v = new SVector(m.N);
-            for (int i = 0; i < m.N; i++)
-                for (int k = 0; k < vect.Size; k++)
-                    v[i] += m[i, k] * vect[k];
-            return v;
-        }
         /// <summary>
-        /// Скалярное произведение
+        /// Поэлементное сложение векторов
         /// </summary>
         /// <param name="A"></param>
         /// <param name="B"></param>
         /// <returns></returns>
+        public static SVector operator +(SVector A, SVector B)
+        {
+            if (A.Length != B.Length)
+                throw new IndexOutOfRangeException(string.Format("Сложение векторов разной размерности невозможно [{0} и {1}]", A.Length, B.Length));
+            SVector v = new SVector(A.Length);
+            for (int i = 0; i < A.Length; i++)
+                v[i] = A[i] + B[i];
+            return v;
+        }
+        /// <summary>
+        /// Поэлементная разность векторов
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <returns></returns>
+        public static SVector operator -(SVector A, SVector B)
+        {
+            if (A.Length != B.Length)
+                throw new IndexOutOfRangeException(string.Format("Вычитание векторов разной размерности невозможно [{0} и {1}]", A.Length, B.Length));
+            SVector v = new SVector(A.Length);
+            for (int i = 0; i < A.Length; i++)
+                v[i] = A[i] - B[i];
+            return v;
+        }
+        /// <summary>
+        /// Поэлементное умножение векторов
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <returns></returns>
+        public static SVector operator *(SVector A, SVector B)
+        {
+            if (A.Length != B.Length)
+                throw new IndexOutOfRangeException(string.Format("Поэлементное произведение векторов разной размерности невозможно [{0} и {1}]", A.Length, B.Length));
+            SVector v = new SVector(A.Length);
+            for (int i = 0; i < A.Length; i++)
+                v[i] = A[i] * B[i];
+            return v;
+        }
+        /// <summary>
+        /// Поэлементное деление векторов
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <returns></returns>
+        public static SVector operator /(SVector A, SVector B)
+        {
+            if (A.Length != B.Length)
+                throw new IndexOutOfRangeException(string.Format("Поэлементное частное векторов разной размерности невозможно [{0} и {1}]", A.Length, B.Length));
+            SVector v = new SVector(A.Length);
+            for (int i = 0; i < A.Length; i++)
+                v[i] = A[i] / B[i];
+            return v;
+        }
+        /// <summary>
+        /// Умножение вектора на число
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <returns></returns>
+        public static SVector operator *(SVector A, Decimal B)
+        {
+            SVector v = A.Clone();
+            for (int i = 0; i < A.Length; i++)
+                v[i] *= B;
+            return v;
+        }
+        /// <summary>
+        /// Деление вектора на число
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <returns></returns>
+        public static SVector operator /(SVector A, Decimal B)
+        {
+            SVector v = A.Clone();
+            for (int i = 0; i < A.Length; i++)
+                v[i] /= B;
+            return v;
+        }
+        /// <summary>
+        /// Умножение числа на вектор
+        /// </summary>
+        /// <param name="B"></param>
+        /// <param name="A"></param>
+        /// <returns></returns>
+        public static SVector operator *(Decimal B, SVector A)
+        {
+            return A * B;
+        }
+        /// <summary>
+        /// умножение матрицы на вектор
+        /// </summary>
+        /// <param name="m"></param>
+        /// <param name="vect"></param>
+        /// <returns></returns>
+        public static SVector operator *(SMatrix m, SVector vect)
+        {
+            if (m.M != vect.Length)
+                throw new IndexOutOfRangeException(string.Format("Невозможно умножить матрицу с {0} столбцом(ами) на вектор из {1} элементов", m.M, vect.Length));
+            SVector v = new SVector(m.N);
+            for (int i = 0; i < m.N; i++)
+                for (int k = 0; k < vect.Length; k++)
+                    v[i] += m[i, k] * vect[k];
+            return v;
+        }
+        /// <summary>
+        /// Скалярное произведение векторов
+        /// </summary>
+        /// <param name="A">Вектор A</param>
+        /// <param name="B">Вектор B</param>
+        /// <returns>Скалярное произведение</returns>
         public static Decimal Dot(SVector A, SVector B)
         {
-            if (A.Size != B.Size)
-                throw new IndexOutOfRangeException(string.Format("Нахождение скалярного произведения разной размерности невозможно [{0} и {1}]", A.Size, B.Size));
+            if (A.Length != B.Length)
+                throw new IndexOutOfRangeException(string.Format("Нахождение скалярного произведения разной размерности невозможно [{0} и {1}]", A.Length, B.Length));
             Decimal dot = 0;
-            for (int i = 0; i < A.Size; i++)
+            for (int i = 0; i < A.Length; i++)
                 dot += A[i] * B[i];
             return dot;
         }
+        /// <summary>
+        /// Заполнить вектор значением value, [startIndex, endIndex]
+        /// </summary>
+        /// <param name="value">значение</param>
+        /// <param name="startIndex">начальный индекс</param>
+        /// <param name="endIndex">конечный индекс</param>
         public void Fill(Decimal value, int startIndex, int endIndex)
         {
-            if (startIndex >= Size || startIndex < 0)
+            if (startIndex >= Length || startIndex < 0)
                 throw new IndexOutOfRangeException("Начальный индекс задан неверно");
-            if (endIndex >= Size || endIndex < 0)
+            if (endIndex >= Length || endIndex < 0)
                 throw new IndexOutOfRangeException("Конечный индекс задан неверно");
             for (int i = startIndex; i <= endIndex; i++)
                 vector[i] = value;
         }
+        /// <summary>
+        /// Заполнить вектор значением value, начиная с startIndex
+        /// </summary>
+        /// <param name="value">значение</param>
+        /// <param name="startIndex">начальный индекс</param>
         public void Fill(Decimal value, int startIndex)
         {
-            Fill(value, startIndex, Size - 1);
+            Fill(value, startIndex, Length - 1);
         }
+        /// <summary>
+        /// Заполнить вектор значением value
+        /// </summary>
+        /// <param name="value">значение</param>
         public void Fill(Decimal value)
         {
-            Fill(value, 0, Size - 1);
+            Fill(value, 0, Length - 1);
         }
+        /// <summary>
+        /// Добавить в начало
+        /// </summary>
+        /// <param name="before"></param>
         public void AddBefore(params Decimal[] before)
         {
             Decimal[] temp = new Decimal[vector.Length + before.Length];
@@ -910,6 +1079,10 @@ namespace SwarthyMath
             vector.CopyTo(temp, before.Length);
             vector = temp;
         }
+        /// <summary>
+        /// Добавить в конец
+        /// </summary>
+        /// <param name="after"></param>
         public void AddAfter(params Decimal[] after)
         {
             Decimal[] temp = new Decimal[vector.Length + after.Length];
@@ -917,6 +1090,12 @@ namespace SwarthyMath
             after.CopyTo(temp, vector.Length);
             vector = temp;
         }
+        /// <summary>
+        /// Преобразовать строку в вектор
+        /// </summary>
+        /// <param name="str">строка, содержащая числа, между которыми находится разделитель</param>
+        /// <param name="separator">разделитель</param>
+        /// <returns></returns>
         public static SVector Parse(string str, char separator = ' ')
         {
             try
@@ -931,6 +1110,12 @@ namespace SwarthyMath
                 throw new Exception("Невозможно преобразовать строку в вектор: " + e.Message);
             }
         }
+        /// <summary>
+        /// Генерация векторов единичной длины
+        /// </summary>
+        /// <param name="n">размер вектора</param>
+        /// <param name="step">1/step = шаг</param>
+        /// <returns>Лист векторов единичной длины</returns>
         public static List<SVector> Generate(int n, int step)
         {
             if (n <= 0)
@@ -953,6 +1138,12 @@ namespace SwarthyMath
             }
             return result;
         }
+        /// <summary>
+        /// Генерация векторов единичной длинны
+        /// </summary>
+        /// <param name="n">размер вектора</param>
+        /// <param name="step">1/step = шаг</param>
+        /// <param name="filename">имя файла, в который будет сохранен результат</param>
         public static void Generate(int n, int step, string filename)
         {
             if (n <= 0)
@@ -1219,7 +1410,7 @@ namespace SwarthyMath
             if (step < eps)
                 return v;
             SVector oldV = v.Clone();
-            for (int i = 0; i < v.Size; i++)
+            for (int i = 0; i < v.Length; i++)
             {
                 SVector temp = v.Clone();
                 temp[i] += step;
@@ -1255,36 +1446,36 @@ namespace SwarthyMath
         public static AlphaBetaResult ThreePointSweep(SVector A, SVector B, SVector C, SVector D, funcAB customLastVal, bool FindResult = false, bool customAB = false, Decimal Alpha0 = 0, Decimal Beta0 = 0, bool customLastX = false)
         {
             AlphaBetaResult result = new AlphaBetaResult();
-            if (A.Size == C.Size && A.Size + 1 == B.Size)
+            if (A.Length == C.Length && A.Length + 1 == B.Length)
             {
                 A.AddBefore(0);
                 C.AddAfter(0);
             }
-            if (A.Size != B.Size || B.Size != C.Size || C.Size != D.Size)
-                throw new ArgumentException(string.Format("Размерности переданных параметров не подходят. A={0}, B={1}, C={2}, D={3}", A.Size, B.Size, C.Size, D.Size));
-            for (int i = 0; i < A.Size; i++)
+            if (A.Length != B.Length || B.Length != C.Length || C.Length != D.Length)
+                throw new ArgumentException(string.Format("Размерности переданных параметров не подходят. A={0}, B={1}, C={2}, D={3}", A.Length, B.Length, C.Length, D.Length));
+            for (int i = 0; i < A.Length; i++)
                 if (Math.Abs(A[i]) + Math.Abs(C[i]) > Math.Abs(B[i]))
                     throw new ArgumentException("Нет диагонального преобладания.");
 
-            result.Alpha = new SVector(A.Size);
-            result.Beta = new SVector(A.Size);
+            result.Alpha = new SVector(A.Length);
+            result.Beta = new SVector(A.Length);
 
             result.Alpha[0] = customAB ? Alpha0 : -C[0] / B[0];
             result.Beta[0] = customAB ? Beta0 : D[0] / B[0];
 
-            for (int i = 1; i < A.Size; i++)
+            for (int i = 1; i < A.Length; i++)
             {
                 result.Alpha[i] = -C[i] / (A[i] * result.Alpha[i - 1] + B[i]);
                 result.Beta[i] = (D[i] - A[i] * result.Beta[i - 1]) / (A[i] * result.Alpha[i - 1] + B[i]);
             }
             if (FindResult)
             {
-                SVector x = new SVector(A.Size);
+                SVector x = new SVector(A.Length);
                 if (!customLastX)
-                    x[A.Size - 1] = (D[A.Size - 1] - A[A.Size - 1] * result.Beta[A.Size - 2]) / (A[A.Size - 1] * result.Alpha[A.Size - 2] + B[A.Size - 1]);
+                    x[A.Length - 1] = (D[A.Length - 1] - A[A.Length - 1] * result.Beta[A.Length - 2]) / (A[A.Length - 1] * result.Alpha[A.Length - 2] + B[A.Length - 1]);
                 else
-                    x[A.Size - 1] = customLastVal(result.Alpha[A.Size - 2], result.Beta[A.Size - 2]);
-                for (int i = A.Size - 2; i >= 0; i--)
+                    x[A.Length - 1] = customLastVal(result.Alpha[A.Length - 2], result.Beta[A.Length - 2]);
+                for (int i = A.Length - 2; i >= 0; i--)
                     x[i] = result.Alpha[i] * x[i + 1] + result.Beta[i];
                 result.Result = x;
             }
@@ -1307,25 +1498,25 @@ namespace SwarthyMath
         #region Метод Гаусса
         public static SVector Gauss(SMatrix A, SVector b)
         {
-            SVector x = new SVector(b.Size);
-            for (int i = 0; i < b.Size; i++)
+            SVector x = new SVector(b.Length);
+            for (int i = 0; i < b.Length; i++)
             {
                 Decimal prevA = A[i, i];
-                for (int j = i; j < b.Size; j++)
+                for (int j = i; j < b.Length; j++)
                     A[i, j] /= prevA;
                 b[i] /= prevA;
-                for (int k = i + 1; k < b.Size; k++)
+                for (int k = i + 1; k < b.Length; k++)
                 {
                     Decimal koef = A[k, i];
-                    for (int j = 0; j < b.Size; j++)
+                    for (int j = 0; j < b.Length; j++)
                         A[k, j] -= koef * A[i, j];
                     b[k] -= koef * b[i];
                 }
             }
-            for (int i = b.Size - 1; i >= 0; i--)
+            for (int i = b.Length - 1; i >= 0; i--)
             {
                 decimal r = 0;
-                for (int j = i + 1; j < b.Size; j++)
+                for (int j = i + 1; j < b.Length; j++)
                     r += A[i, j] * x[j];
                 x[i] = b[i] - r;
             }
@@ -1335,17 +1526,52 @@ namespace SwarthyMath
         #endregion
         #endregion
         #region Генерация случайных величин
-        static Random rand = new Random();
+        /// <summary>
+        /// Генератор случайных чисел, используемый внутри библиотеки
+        /// </summary>
+        public static Random rand = new Random();        
+        /// <summary>
+        /// Случайное число, приведенное к типу decimal
+        /// </summary>
+        public static decimal RandomDecimal
+        {
+            get
+            {
+                return (decimal)rand.NextDouble();
+            }
+        }
+        #endregion
+        /// <summary>
+        /// Факториал числа n
+        /// </summary>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public static ulong Factorial(ulong n)
+        {
+            ulong result = n < 2 ? 1 : n;
+            while(n>1)
+            {
+                result *= --n;
+            }
+            return result;
+        }
+    }
+    /// <summary>
+    /// Распределения случайных величин
+    /// </summary>
+    public static class Distributions
+    {
         /// <summary>
         /// Равномерное распределение
         /// </summary>
         /// <param name="a">нижняя граница</param>
         /// <param name="b">верхняя граница</param>
         /// <returns></returns>
-        static decimal UniformDistribution(decimal a, decimal b)
+        public static decimal UniformDistribution(decimal a, decimal b)
         {
-            return a + RandomDecimal * (b - a);
+            return a + SwarthyHelper.RandomDecimal * (b - a);
         }
+
         /// <summary>
         /// Равномерное распределение (вектор)
         /// </summary>
@@ -1353,7 +1579,7 @@ namespace SwarthyMath
         /// <param name="a">нижняя граница</param>
         /// <param name="b">верхняя граница</param>
         /// <returns></returns>
-        static SVector UniformDistribution(int n, decimal a, decimal b)
+        public static SVector UniformDistribution(int n, decimal a, decimal b)
         {
             SVector result = new SVector(n);
             for (int i = 0; i < n; i++)
@@ -1364,19 +1590,20 @@ namespace SwarthyMath
         /// <summary>
         /// Экспоненциальное распределение
         /// </summary>
-        /// <param name="lambda"></param>
+        /// <param name="lambda">параметр распределения</param>
         /// <returns></returns>
-        static decimal ExponentialDistribution(decimal lambda)
+        public static decimal ExponentialDistribution(decimal lambda)
         {
-            return (-1 / lambda) * (Log(RandomDecimal));
+            return (-1 / lambda) * (SwarthyHelper.Log(SwarthyHelper.RandomDecimal));
         }
+
         /// <summary>
         /// Экспоненциальное распределение
         /// </summary>
         /// <param name="n">размер вектора</param>
-        /// <param name="lambda"></param>
-        /// <returns></returns>
-        static SVector ExponentioalDistribution(int n, decimal lambda)
+        /// <param name="lambda">параметр распределения</param>
+        /// <returns>вектор величин, распределенных по экспоненциальному закону</returns>
+        public static SVector ExponentialDistribution(int n, decimal lambda)
         {
             SVector result = new SVector(n);
             for (int i = 0; i < n; i++)
@@ -1391,26 +1618,30 @@ namespace SwarthyMath
         /// <param name="mu">математическое ожидание, медиана, мода</param>
         /// <param name="sigma">среднеквадратическое отклонение (sigma^2 - дисперсия)</param>        
         /// <returns></returns>
-        static SVector NormalDistribution(int n, decimal mu, decimal sigma)
+        public static SVector NormalDistribution(int n, decimal mu, decimal sigma)
         {
             SVector result = new SVector(n);
             for (int i = 0; i < n; i++)
             {
                 result[i] = mu;
                 for (int j = 0; j < 12; j++)
-                    result[i] += RandomDecimal * sigma;
+                    result[i] += SwarthyHelper.RandomDecimal * sigma;
                 result[i] -= 6 * sigma;
             }
             return result;
         }
-        static decimal RandomDecimal
+
+        /// <summary>
+        /// Распределение Пуассона
+        /// </summary>
+        /// <param name="m">число событий, выпадающих на интервал длины x</param>
+        /// <param name="lambda">параметр закона Пуассона</param>
+        /// <param name="x">длина интервала (непонятно? - почитай википедию)</param>
+        /// <returns></returns>
+        public static decimal PoissonDistribution(int m, decimal lambda, decimal x = 1)
         {
-            get
-            {
-                return (decimal)rand.NextDouble();
-            }
+            return (SwarthyHelper.Pow((lambda * x), m) * SwarthyHelper.Exp(-lambda * x)) / SwarthyHelper.Factorial((ulong)m);
         }
-        #endregion
     }
     /// <summary>
     /// Структура, хранящая результат работы метода трехточечной прогонки
@@ -1422,7 +1653,7 @@ namespace SwarthyMath
         {
             this.Alpha = Alpha;
             this.Beta = Beta;
-            this.Result = new SVector(Alpha.Size);
+            this.Result = new SVector(Alpha.Length);
         }
         public AlphaBetaResult(SVector Alpha, SVector Beta, SVector Result)
         {
