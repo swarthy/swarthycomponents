@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace SwarthyComponents.Encoding
+namespace SwarthyComponents.Compress
 {
     public static class Huffman
     {
