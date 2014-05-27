@@ -52,7 +52,13 @@
     <Compile Include="DrawPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Compress\Arithmetic.cs" />
+    <Compile Include="Compress\BitWriter.cs" />
+    <Compile Include="Compress\Huffman.cs" />
+    <Compile Include="Compress\LZ78.cs" />
+    <Compile Include="Compress\LZSS.cs" />
     <Compile Include="InputHelper.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
